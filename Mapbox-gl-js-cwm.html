@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Studio Week 2 -- Exercise 2</title>
+  <meta name='Exercse_2' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!-- Add Mapbox GL JS JavaScript file -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <!-- Add in the Mapbox GL JS CSS file -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Add styling info for the map -->
+    <style>
+    body {
+        margin: 0;
+        padding: 10;
+    }
+    #mapId {
+      height: 800px;
+    }  
+    </style>
+    <!-- Adding styling info for page layout by reading in a CSS file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<div class="header">
+  <a href="index.html" class="logo">Studio Week 2: Vector tiles with Mapbox GL JS </a>
+  <div class="header-right">
+    <a href="index.html" target="_self">Output 1</a>
+    <a class="active" href="Mapbox-gl-js-cwm.html" target="_self">Output 2</a>
+    <a href="Mapbox-gl-js-ct.html" target="_self">Output 3</a>
+    <a href="Mapbox-gl-js-bm.html" target="_self">Output 4</a>
+  </div>
+</div>	
+  <br>
+
+  <div id="mapId"></div>
+  <div id="menu">
+   <input
+          id="streets-v11"
+          type="radio"
+          name="rtoggle"
+          value="streets"
+          checked="checked"
+          />
+  <label for="streets-v11">streets</label>
+  <input id="light-v10" type="radio" name="rtoggle" value="light" />
+  <label for="light-v10">light</label>
+  <input id="dark-v10" type="radio" name="rtoggle" value="dark" />
+  <label for="dark-v10">dark</label>
+  <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors" />
+  <label for="outdoors-v11">outdoors</label>
+  <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" />
+  <label for="satellite-v9">satellite</label>
+  </div>
+
+    <script>
+        // Mapbox GL JS  token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibXZhbmRlbmJ1cmc5MiIsImEiOiJja2U4d2R5dDAyMHhwMnpwOGl6OGs2bmZ3In0.bjkT9KX_g4RVv1voVkvRnw';
+
+         var map = new mapboxgl.Map({
+             container: 'mapId', //  container
+             style: 'mapbox://styles/mapbox/streets-v11', // style
+             center: [-87.6298, 41.875], // center
+             zoom: 12 //  zoom
+         });
+      var layerList = document.getElementById('menu');
+      var inputs = layerList.getElementsByTagName('input');
+ 
+    function switchLayer(layer) {
+    var layerId = layer.target.id;
+    map.setStyle('mapbox://styles/mapbox/' + layerId);
+    }
+ 
+    for (var i = 0; i < inputs.length; i++) {
+    inputs[i].onclick = switchLayer;
+    }
+    </script>
+
+</body>
+
+</html>
