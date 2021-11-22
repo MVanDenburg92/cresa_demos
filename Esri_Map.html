@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Studio Week 2 -- Exercise 2</title>
+  <meta name='Exercse_2' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!-- Add Mapbox GL JS JavaScript file -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <!-- Add in the Mapbox GL JS CSS file -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Add styling info for the map -->
+    <style>
+    body {
+        margin: 0;
+        padding: 10;
+    }
+    #mapId {
+      height: 800px;
+    }
+    #basemaps-wrapper {
+        position: relative;
+        bottom: 10%;
+        left: 3%;
+    }
+    #basemaps {
+        padding: 4px 8px;
+        font-size: 16px;
+    }
+    </style>
+    <!-- Adding styling info for page layout by reading in a CSS file -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/css/ol.css" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/build/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol-mapbox-style@6.1.4/dist/olms.js"></script>
+</head>
+
+<body>
+<div class="header">
+  <a href="index.html" class="logo">Cresa Studio: Different Basemaps</a>
+  <div class="header-right">
+    <a href="index.html" target="_self">Output 1</a>
+    <a href="Mapbox-gl-js-cwm.html" target="_self">Output 2</a>
+    <a href="Mapbox-gl-js-ct.html" target="_self">Output 3</a>
+    <a href="Mapbox-gl-js-bm.html" target="_self">Output 4</a>
+    <a class="active" href="Esri_Map.html" target="_self">Output 5</a>
+  </div>
+</div>
+  <br>
+
+<div id="mapId"></div>
+<div id="basemaps-wrapper">
+    <select id="basemaps">
+      <option value="ArcGIS:Streets">Streets</option>
+      <option value="ArcGIS:Navigation">Navigation</option>
+      <option value="ArcGIS:Topographic">Topographic</option>
+      <option value="ArcGIS:LightGray">Light Gray</option>
+      <option value="ArcGIS:DarkGray">Dark gray</option>
+      <option value="ArcGIS:StreetsRelief">Streets Relief</option>
+      <option value="ArcGIS:Imagery:Standard">Imagery</option>
+      <option value="ArcGIS:ChartedTerritory">ChartedTerritory</option>
+      <option value="ArcGIS:ColoredPencil">ColoredPencil</option>
+      <option value="ArcGIS:Nova">Nova</option>
+      <option value="ArcGIS:Midcentury">Midcentury</option>
+      <option value="OSM:Standard">OSM</option>
+      <option value="OSM:Streets">OSM:Streets</option>
+    </select>
+</div>
+
+  <script>
+    const apiKey = "AAPK6a5d8146079342c5bb2cd2881886fd78-GUoJ8DeL47k78_HwC546hfzEm7KZm0X6eTIjWNxBmOr74eYo-lFrlZkfJqOlerS";
+    const map = new ol.Map({ target: "mapId" });
+    map.setView(
+      new ol.View({
+        center: ol.proj.fromLonLat([-87.6298, 41.875]),
+        zoom: 12
+      })
+    );
+
+    const baseUrl = "https://basemaps-api.arcgis.com/arcgis/rest/services/styles";
+    const url = (name) => `${baseUrl}/${name}?type=style&token=${apiKey}`;
+
+    const setBasemap = (name) => {
+      // Clear out existing layers.
+      map.setLayerGroup(new ol.layer.Group());
+      // Instantiate the given basemap layer.
+      olms(map, url(name));
+    };
+
+    setBasemap('ArcGIS:Streets');
+
+    const basemapsSelectElement = document.querySelector('#basemaps');
+
+    basemapsSelectElement.addEventListener('change', (e) => {
+      setBasemap(e.target.value);
+    });
+
+  </script>
+
+</body>
+
+</html>
