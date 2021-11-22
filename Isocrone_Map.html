@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Studio Week 2 -- Exercise 2</title>
+  <meta name='Exercse_2' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!-- Add Mapbox GL JS JavaScript file -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <!-- Add in the Mapbox GL JS CSS file -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Add styling info for the map -->
+    <style>
+    body {
+        margin: 0;
+        padding: 10;
+    }
+    #mapId {
+      height: 800px;
+    }
+    #basemaps-wrapper {
+        position: relative;
+        bottom: 10%;
+        left: 3%;
+    }
+    #basemaps {
+        padding: 4px 8px;
+        font-size: 16px;
+    }
+    .coordinates {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    padding: 5px 10px;
+    margin: 0;
+    font-size: 11px;
+    line-height: 18px;
+    border-radius: 3px;
+    display: none;
+    }
+    </style>
+    <!-- Adding styling info for page layout by reading in a CSS file -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/css/ol.css" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/build/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol-mapbox-style@6.1.4/dist/olms.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+</head>
+
+<body>
+<div class="header">
+  <a href="index.html" class="logo">Cresa Studio: Different Basemaps</a>
+  <div class="header-right">
+    <a href="index.html" target="_self">Output 1</a>
+    <a href="Mapbox-gl-js-cwm.html" target="_self">Output 2</a>
+    <a href="Mapbox-gl-js-ct.html" target="_self">Output 3</a>
+    <a href="Mapbox-gl-js-bm.html" target="_self">Output 4</a>
+    <a href="Esri_Map.html" target="_self">Output 5</a>
+    <a class="active" href="Isocrone_Map.html" target="_self">Output 6</a>
+  </div>
+</div>
+  <br>
+
+<div id="mapId"></div>
+<pre id="coordinates" class="coordinates"></pre>
+
+<div class="absolute fl my24 mx24 py24 px24 bg-gray-faint round">
+  <form id="params">
+    <h4 class="txt-m txt-bold mb6">Choose a travel mode:</h4>
+    <div class="mb12 mr12 toggle-group align-center">
+      <label class="toggle-container">
+        <input name="profile" type="radio" value="walking" />
+        <div class="toggle toggle--active-null toggle--null">Walking</div>
+      </label>
+      <label class="toggle-container">
+        <input name="profile" type="radio" value="cycling" checked />
+        <div class="toggle toggle--active-null toggle--null">Cycling</div>
+      </label>
+      <label class="toggle-container">
+        <input name="profile" type="radio" value="driving" />
+        <div class="toggle toggle--active-null toggle--null">Driving</div>
+      </label>
+    </div>
+    <h4 class="txt-m txt-bold mb6">Choose a maximum duration:</h4>
+    <div class="mb12 mr12 toggle-group align-center">
+      <label class="toggle-container">
+        <input name="duration" type="radio" value="10" checked />
+        <div class="toggle toggle--active-null toggle--null">10 min</div>
+      </label>
+      <label class="toggle-container">
+        <input name="duration" type="radio" value="20" />
+        <div class="toggle toggle--active-null toggle--null">20 min</div>
+      </label>
+      <label class="toggle-container">
+        <input name="duration" type="radio" value="30" />
+        <div class="toggle toggle--active-null toggle--null">30 min</div>
+      </label>
+    </div>
+  </form>
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibXZhbmRlbmJ1cmc5MiIsImEiOiJja2U4d2R5dDAyMHhwMnpwOGl6OGs2bmZ3In0.bjkT9KX_g4RVv1voVkvRnw';
+
+const map = new mapboxgl.Map({
+container: 'mapId', // container id
+style: 'mapbox://styles/mapbox/streets-v11', // stylesheet
+center: [-87.6298, 41.875], // starting position [lng, lat]
+zoom: 11.5 // starting zoom
+});
+
+// Target the params form in the HTML
+const params = document.getElementById('params');
+
+const coordinates = document.getElementById('coordinates');
+
+const marker = new mapboxgl.Marker({
+  draggable: true
+})
+  .setLngLat([-87.6298, 41.875])
+  .addTo(map);
+
+
+function onDragEnd() {
+window.lngLat = marker.getLngLat();
+coordinates.style.display = 'block';
+coordinates.innerHTML = `Longitude: ${window.lngLat.lng}<br />Latitude: ${window.lngLat.lat}`;
+}
+
+marker.on('dragend', onDragEnd);
+
+// Create variables to use in getIso()
+const urlBase = 'https://api.mapbox.com/isochrone/v1/mapbox/';
+const lon = window.lngLat.lng;
+const lat = window.lngLat.lat;
+let profile = 'cycling';
+let minutes = 10;
+
+// Set up a marker that you can use to show the query's coordinates
+// const marker = new mapboxgl.Marker({
+// 'color': '#314ccd'
+// });
+
+// Create a LngLat object to use in the marker initialization
+// https://docs.mapbox.com/mapbox-gl-js/api/#lnglat
+const lngLat = {
+lon: lon,
+lat: lat
+};
+
+  // Listen for the `result` event from the Geocoder
+  // `result` event is triggered when a user makes a selection
+  //  Add a marker at the result's coordinates
+
+
+// Create a function that sets up the Isochrone API query then makes a fetch call
+async function getIso() {
+  const query = await fetch(
+    `${urlBase}${profile}/${lon},${lat}?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`,{ method: 'GET' }
+  );
+  const data = await query.json();
+// Set the 'iso' source's data to what's returned by the API query
+  map.getSource('iso').setData(data);
+}
+
+
+// When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
+params.addEventListener('change', (event) => {
+if (event.target.name === 'profile') {
+profile = event.target.value;
+} else if (event.target.name === 'duration') {
+minutes = event.target.value;
+}
+getIso();
+});
+
+map.on('load', () => {
+// When the map loads, add the source and layer
+map.addSource('iso', {
+type: 'geojson',
+data: {
+'type': 'FeatureCollection',
+'features': []
+}
+});
+
+map.addLayer(
+{
+'id': 'isoLayer',
+'type': 'fill',
+'source': 'iso',
+'layout': {},
+'paint': {
+'fill-color': '#5a3fc0',
+'fill-opacity': 0.3
+}
+},
+'poi-label'
+);
+
+// Initialize the marker at the query coordinates
+marker.setLngLat(window.lngLat).addTo(map);
+
+// Make the API call
+getIso();
+});
+</script>
+
+</body>
+
+</html>
