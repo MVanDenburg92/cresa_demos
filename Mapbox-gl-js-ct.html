@@ -10,10 +10,10 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
   <!-- Add in the Mapbox GL JS CSS file -->
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
-  
+
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
-  
+
   <!-- Set the map's width: 800px and height: 600px in a `style` tag -->
   <style type="text/css">
     #mapId {
@@ -28,18 +28,18 @@
 
 <body>
 <div class="header">
-  <a href="index.html" class="logo">Studio Week 2: Marker and Popup with Mapbox GL JS map </a>
+  <a href="index.html" class="logo">Cresa Studio:Marker and Popup with Mapbox GL JS map </a>
   <div class="header-right">
     <a href="index.html" target="_self">Output 1</a>
     <a href="Mapbox-gl-js-cwm.html" target="_self">Output 2</a>
     <a class="active" href="Mapbox-gl-js-ct.html" target="_self">Output 3</a>
     <a href="Mapbox-gl-js-bm.html" target="_self">Output 4</a>
   </div>
-</div>	
+</div>
   <br>
 
  <div id="mapId"></div>
-  
+
  <div id="menu">
    <input
           id="streets-v11"
@@ -58,7 +58,7 @@
   <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" />
   <label for="satellite-v9">satellite</label>
   </div>
-  
+
 
   <script>
     // Set your Mapbox access token
@@ -94,9 +94,9 @@
        .setLngLat([-87.6251, 41.8786])
        .setPopup(popup)
        .addTo(map);
-    
-    
-    
+
+
+
     var geocoder = new MapboxGeocoder({ // Initialize the geocoder
       accessToken: mapboxgl.accessToken, // Set the access token
       mapboxgl: mapboxgl, // Set the mapbox-gl instance
@@ -105,19 +105,19 @@
 
 // Add the geocoder to the map
 map.addControl(geocoder);
-    
+
 var layerList = document.getElementById('menu');
 var inputs = layerList.getElementsByTagName('input');
- 
+
 function switchLayer(layer) {
 var layerId = layer.target.id;
 map.setStyle('mapbox://styles/mapbox/' + layerId);
 }
- 
+
 for (var i = 0; i < inputs.length; i++) {
 inputs[i].onclick = switchLayer;
 }
-      
+
   </script>
   <div style="padding-left:20px">
   <h1>Exercise 3</h1>
